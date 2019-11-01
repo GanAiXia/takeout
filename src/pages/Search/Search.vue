@@ -1,6 +1,6 @@
 <template>
     <div>
-        msite
+        search
     </div>
 </template>
 
