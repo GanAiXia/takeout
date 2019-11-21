@@ -306,15 +306,32 @@
 
 <script>
     import TopInfo from '../../components/TopInfo/TopInfo'
+    import 'swiper/dist/css/swiper.css'
+    import { Swiper } from 'vue-awesome-swiper'
     export default {
       components:{
           TopInfo
       },
       data() {
         return {
-          title: '您的地址是...'
+          title: '您的地址是...',
+          // some swiper options...
         }
+
       },
+      computed: {
+
+      },
+      mounted () {
+        // this.mySwiper.slideTo(3, 1000, false)
+        new Swiper('.swiper-container', {
+          loop: true,
+          autoplay: true,
+          pagination: {
+            el: '.swiper-pagination'
+          }
+        })
+      }
     }
 </script>
 
