@@ -1,7 +1,7 @@
 <template>
       <div class="msite">
         <!--首页头部-->
-        <TopInfo :title="title">
+        <TopInfo :title="addr">
         <i class="iconfont icon-sousuo" slot="left"></i>
         <span class="header_login_text" slot="right">登录|注册</span>
         </TopInfo>
@@ -308,6 +308,9 @@
     import TopInfo from '../../components/TopInfo/TopInfo'
     import 'swiper/dist/css/swiper.css'
     import { Swiper } from 'vue-awesome-swiper'
+    // import ajax from '../../api/ajax.js'
+    import axios from 'axios'
+
     export default {
       components:{
           TopInfo
@@ -315,6 +318,7 @@
       data() {
         return {
           title: '您的地址是...',
+          addr: ''
           // some swiper options...
         }
 
@@ -331,6 +335,16 @@
             el: '.swiper-pagination'
           }
         })
+        let addr1 = this
+        axios.get('/api/position/40.10038,116.36867').then(function (response) {
+                addr1.addr = response.data.data.address
+                window.console.log(addr1)                
+           }).catch(function(error){
+             addr1 = error
+           })
+        
+        window.console.log(this.addr)
+        
       }
     }
 </script>
