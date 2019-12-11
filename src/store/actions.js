@@ -1,11 +1,13 @@
 import { 
     RECEIVE_ADDRESS,
     GET_CATEGORYS,
+    GET_SHOPS
  } from './mutations-types'
 
 import {
     reqAddress,
-    reqFoodCategorys
+    reqFoodCategorys,
+    reqShops,
 } from '../api'
 
 export default {
@@ -25,6 +27,17 @@ export default {
         if (result.code === 0) {
             const categorys = result.data
             commit(GET_CATEGORYS, {categorys})
+        }
+    },
+    async getShops({commit, state}){
+
+        const geohash = state.latitude + ',' + state.longitude
+
+        const result = await reqShops(geohash)
+
+        if (result.code === 0) {
+            const shops = result.data
+            commit(GET_SHOPS, {shops})
         }
     }
 }
