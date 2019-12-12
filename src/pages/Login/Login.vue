@@ -54,22 +54,29 @@
         </a>
       </div>
     </section>
+    <Alter v-show="alertShow" :alertText="alertText" @closeTip="closeTip"/>
   </div>
 </template>
 
 <script>
+    import Alter from '../../components/Alter/Alter'
     export default {
        data() {
            return {
-               loginWay: false,
+               loginWay: true,
                showPwd: false,
                phone: '',
                countNumber: 0,
                pwd: '',
                name: '',
                code: '',
-               captcha: ''
+               captcha: '',
+               alertText: '', // 提示文本
+               alertShow: false, // 是否显示警告框               
            }
+       },
+       components: {
+         Alter
        },
        computed: {
          checkPhone(){
@@ -89,8 +96,33 @@
              }, 1000);
            }
          },
+         alertTip(text){
+           this.alertText = text
+           this.alertShow = true
+         },
+         closeTip(){
+           this.alertShow = false
+           this.alertText = ''
+         },
          login(){
-
+           if (this.loginWay) {
+             const {checkPhone, phone, code} = this
+              if (!checkPhone) {
+                this.alertTip('电话号码错误')
+              }else if(!/^\d{6}$/.test(code)){
+                this.alertTip('验证码错误')
+                window.console.log(phone)
+              }          
+           }else{
+             const { name, pwd, captcha } = this
+             if (!name) {
+               this.alertTip('请填写用户名')
+             }else if(!pwd){
+               this.alertTip('请填写密码')
+             }else if(!captcha){
+               this.alertTip('请填写验证码')
+             }
+           }
          }
        }
     }
