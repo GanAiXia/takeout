@@ -10,14 +10,16 @@
           </div>
         </div>
         <div class="login_content">
-          <form>
+          <form @submit.prevent="login">
             <div :class="{on: loginWay}">
               <section class="login_message">
-                <input type="tel" maxlength="11" placeholder="手机号">
-                <button disabled="disabled" class="get_verification">获取验证码</button>
+                <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
+                <button :disabled="!checkPhone" class="get_verification" :class="{right_phone: checkPhone}" @click.prevent="getCode">
+                   {{ countNumber ? `已发送${countNumber}s` : '获取验证码' }}
+                </button>
               </section>
               <section class="login_verification">
-                <input type="tel" maxlength="8" placeholder="验证码">
+                <input type="tel" maxlength="8" placeholder="验证码" v-model="code">
               </section>
               <section class="login_hint">
                 温馨提示：未注册硅谷外卖帐号的手机号，登录时将自动注册，且代表已同意
@@ -27,18 +29,18 @@
             <div :class="{on: !loginWay}">
               <section>
                 <section class="login_message">
-                  <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
+                  <input type="text" maxlength="11" placeholder="手机/邮箱/用户名" v-model="name">
                 </section>
                 <section class="login_verification">
-                  <input type="text" v-if="showPwd" maxlength="8" placeholder="密码">
-                  <input type="password" v-else maxlength="8" placeholder="密码">
-                  <div class="switch_button" :class="showPwd ? 'on' : 'false'" @click="showPwd = !showPwd">
+                  <input type="text" v-if="showPwd" maxlength="8" placeholder="密码" v-model="pwd">
+                  <input type="password" v-else maxlength="8" placeholder="密码" v-model="pwd">
+                  <div class="switch_button" :class="showPwd ? 'on' : 'off'" @click="showPwd = !showPwd">
                     <div class="switch_circle" :class="{right: showPwd}"></div>
                     <span class="switch_text">{{ showPwd ? 'abc' : '...' }}</span>
                   </div>
                 </section>
                 <section class="login_message">
-                  <input type="text" maxlength="11" placeholder="验证码">
+                  <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
                   <img class="get_verification" src="./images/captcha.svg" alt="captcha">
                 </section>
               </section>
@@ -60,9 +62,37 @@
        data() {
            return {
                loginWay: false,
-               showPwd: false
+               showPwd: false,
+               phone: '',
+               countNumber: 0,
+               pwd: '',
+               name: '',
+               code: '',
+               captcha: ''
            }
-       }, 
+       },
+       computed: {
+         checkPhone(){
+           return /^1\d{10}$/.test(this.phone)
+         }
+       },
+       methods: {
+         getCode(){
+           if (!this.countNumber) {
+            this.countNumber = 30
+            const intervalId = setInterval(() => {
+               this.countNumber --
+               if (this.countNumber <= 0) {
+                 this.countNumber = 0
+                 clearInterval(intervalId)
+               }
+             }, 1000);
+           }
+         },
+         login(){
+
+         }
+       }
     }
 </script>
 
