@@ -41,7 +41,7 @@
                 </section>
                 <section class="login_message">
                   <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                  <img class="get_verification" src="./images/captcha.svg" alt="captcha">
+                  <img class="get_verification" src="http://localhost:4000/captcha" @click="changeCaptcha" alt="captcha">
                 </section>
               </section>
             </div>
@@ -63,7 +63,7 @@
     export default {
        data() {
            return {
-               loginWay: true,
+               loginWay: false,
                showPwd: false,
                phone: '',
                countNumber: 0,
@@ -123,6 +123,9 @@
                this.alertTip('请填写验证码')
              }
            }
+         },
+         changeCaptcha(event){
+           event.target.src = "http://localhost:4000/captcha?time=" + Date.now()
          }
        }
     }
