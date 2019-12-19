@@ -13,13 +13,13 @@
             </div>
             <div class="user-info">
               
-              <p class="user-info-top"><router-link to="/login">登录/注册</router-link></p>
+              <p class="user-info-top"><router-link to="/login">{{ userInfo.name || '登录/注册'}}</router-link></p>
               
               <p>
                 <span class="user-icon">
                   <i class="iconfont icon-shouji icon-mobile"></i>
                 </span>
-                <span class="icon-mobile-number">暂无绑定手机号</span>
+                <span class="icon-mobile-number">{{ userInfo.phone || '暂无绑定手机号'}}</span>
               </p>
             </div>
             <span class="arrow">
@@ -100,8 +100,11 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     export default {
-
+      computed: {
+        ...mapState(['userInfo'])
+      },
     }
 </script>
 

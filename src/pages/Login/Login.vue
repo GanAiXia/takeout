@@ -41,7 +41,7 @@
                 </section>
                 <section class="login_message">
                   <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                  <img class="get_verification" src="http://localhost:4000/captcha" @click="changeCaptcha" alt="captcha">
+                  <img class="get_verification" src="http://localhost:4000/captcha" @click="changeCaptcha" ref="captcha" alt="captcha">
                 </section>
               </section>
             </div>
@@ -60,10 +60,12 @@
 
 <script>
     import Alter from '../../components/Alter/Alter'
+    import { reqSendCode, reqSmsLogin, reqLogin } from '../../api'
+    import { clearInterval } from 'timers'
     export default {
        data() {
            return {
-               loginWay: false,
+               loginWay: true,
                showPwd: false,
                phone: '',
                countNumber: 0,
@@ -72,7 +74,7 @@
                code: '',
                captcha: '',
                alertText: '', // 提示文本
-               alertShow: false, // 是否显示警告框               
+               alertShow: false, // 是否显示警告框       
            }
        },
        components: {
@@ -84,16 +86,24 @@
          }
        },
        methods: {
-         getCode(){
+         async getCode(){
            if (!this.countNumber) {
             this.countNumber = 30
-            const intervalId = setInterval(() => {
+            this.intervalId = setInterval(() => {
                this.countNumber --
                if (this.countNumber <= 0) {
                  this.countNumber = 0
-                 clearInterval(intervalId)
+                 clearInterval(this.intervalId)
                }
              }, 1000);
+           const result = await reqSendCode(this.phone)
+           if (result.code === 1) {
+             this.alertTip(result.msg)
+             if (this.countNumber) {
+               this.countNumber = 0
+               clearInterval(this.intervalId)
+             }
+           }
            }
          },
          alertTip(text){
@@ -104,28 +114,50 @@
            this.alertShow = false
            this.alertText = ''
          },
-         login(){
+         async login(){
+           let result
            if (this.loginWay) {
              const {checkPhone, phone, code} = this
               if (!checkPhone) {
                 this.alertTip('电话号码错误')
+                return
               }else if(!/^\d{6}$/.test(code)){
                 this.alertTip('验证码错误')
-                window.console.log(phone)
-              }          
+                return
+              }
+              //发送ajax请求短信登录
+              result = await reqSmsLogin(phone, code)
+
            }else{
              const { name, pwd, captcha } = this
              if (!name) {
                this.alertTip('请填写用户名')
+               return
              }else if(!pwd){
                this.alertTip('请填写密码')
+               return
              }else if(!captcha){
                this.alertTip('请填写验证码')
+               return
              }
+             //发送ajax请求用户名登录
+             result = await reqLogin({name, pwd, captcha})
+           }
+            if (this.countNumber) {
+              this.countNumber = 0
+              clearInterval(this.intervalId)
+            }           
+           if (result.code === 0) {
+             const user = result.data
+             this.$store.dispatch('recordUser', user)
+             this.$router.replace('/profile')  
+           }else{
+             this.changeCaptcha()
+             this.alertTip(result.msg)
            }
          },
-         changeCaptcha(event){
-           event.target.src = "http://localhost:4000/captcha?time=" + Date.now()
+         changeCaptcha(){
+           this.$refs.captcha.src = "http://localhost:4000/captcha?time=" + Date.now()
          }
        }
     }

@@ -1,7 +1,8 @@
 import { 
     RECEIVE_ADDRESS,
     GET_CATEGORYS,
-    GET_SHOPS
+    GET_SHOPS,
+    RECEIVE_USER_INFO
  } from './mutations-types'
 
 import {
@@ -13,7 +14,6 @@ import {
 export default {
     async getAddress({commit, state}) {
         const geohash = state.latitude + ',' + state.longitude
-
         const result = await reqAddress(geohash)
         
         if (result.code === 0) {
@@ -39,5 +39,8 @@ export default {
             const shops = result.data
             commit(GET_SHOPS, {shops})
         }
+    },
+    recordUser({commit}, userInfo){
+        commit(RECEIVE_USER_INFO, {userInfo})
     }
 }
