@@ -13,7 +13,7 @@
             </div>
             <div class="user-info">
               
-              <p class="user-info-top"><router-link to="/login">{{ userInfo.name || '登录/注册'}}</router-link></p>
+              <p class="user-info-top"><router-link :to="userInfo._id ? '/userInfo' : '/login'">{{ userInfo.name || '登录/注册'}}</router-link></p>
               
               <p>
                 <span class="user-icon">

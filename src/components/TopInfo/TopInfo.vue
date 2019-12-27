@@ -1,20 +1,26 @@
 <template>
     <div class="msite_header">
-        <span class="header_search">
+        <router-link class="header_search" to="/search">
         <slot name="left"></slot>
-        </span>
+        </router-link>
         <span class="header_title">
         <span class="header_title_text ellipsis">{{title}}</span>
         </span>
-        <span class="header_login">
-        <slot name="right"></slot>
-        </span>
+        <router-link :to="userInfo._id ? 'userInfo': '/login'" class="header_login">
+        <slot name="right">
+            {{ userInfo._id ? <i class="iconfont icon-person"></i> : '登录/注册' }}
+        </slot>
+        </router-link>
     </div>
 </template>
 
 <script>
+    import { mapState } from 'vuex'
     export default {
-        props: ['title']
+        props: ['title'],
+        computed: {
+            ...mapState(['userInfo'])
+        }
     }
 </script>
 
@@ -34,6 +40,7 @@
         transform translateY(-50%)
         width 10%
         height 50%
+        color #fff
         .icon-sousuo
             font-size 25px
             color #fff
