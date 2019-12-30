@@ -146,7 +146,9 @@
             if (this.countNumber) {
               this.countNumber = 0
               clearInterval(this.intervalId)
-            }           
+            }     
+             window.console.log(result)
+
            if (result.code === 0) {
              const user = result.data
              this.$store.dispatch('recordUser', user)

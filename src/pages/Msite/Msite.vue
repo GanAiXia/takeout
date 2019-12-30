@@ -3,7 +3,10 @@
         <!--首页头部-->
         <TopInfo :title="address.name">
         <i class="iconfont icon-sousuo" slot="left"></i>
-        <span class="header_login_text" slot="right">登录|注册</span>
+        <span class="header_login_text" v-if="!userInfo._id" slot="right">登录/注册</span>
+        <span class="header_login_text" v-else slot="right">
+          <i class="iconfont icon-person"></i>
+        </span>
         </TopInfo>
         <!--首页导航-->
         <nav class="msite_nav">
@@ -108,7 +111,7 @@
 
       },
       computed: {
-        ...mapState(['address', 'categorys', 'shops']),
+        ...mapState(['address', 'categorys', 'shops', 'userInfo']),
         
         categorysArr(){
           const {categorys} = this

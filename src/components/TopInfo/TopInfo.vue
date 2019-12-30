@@ -6,10 +6,8 @@
         <span class="header_title">
         <span class="header_title_text ellipsis">{{title}}</span>
         </span>
-        <router-link :to="userInfo._id ? 'userInfo': '/login'" class="header_login">
-        <slot name="right">
-            {{ userInfo._id ? <i class="iconfont icon-person"></i> : '登录/注册' }}
-        </slot>
+        <router-link :to="userInfo._id ? '/userInfo' : '/login'" class="header_login">
+        <slot name="right"></slot>
         </router-link>
     </div>
 </template>
