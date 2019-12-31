@@ -13,9 +13,9 @@
             </div>
             <div class="user-info">
               
-              <p class="user-info-top"><router-link :to="userInfo._id ? '/userInfo' : '/login'">{{ userInfo.name || '登录/注册'}}</router-link></p>
+              <p class="user-info-top" v-show="userInfo.name || !userInfo._id"><router-link :to="userInfo._id ? '/userInfo' : '/login'">{{ userInfo.name || '登录/注册'}}</router-link></p>
               
-              <p>
+              <p v-show="userInfo.phone">
                 <span class="user-icon">
                   <i class="iconfont icon-shouji icon-mobile"></i>
                 </span>
