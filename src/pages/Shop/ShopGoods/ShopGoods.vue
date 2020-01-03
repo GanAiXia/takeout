@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="goods">
-            <div class="menu-wrapper" ref="menuWrapper">
+            <div class="menu-wrapper">
                 <ul>
                     <li class="menu-item current" v-for="(good, index) in goods" :key="index">
                         <span class="text bottom-border-1px">
@@ -12,8 +12,8 @@
                 </ul>
             </div>
 
-            <div class="foods-wrapper" ref="foodsWrapper">
-                <ul>
+            <div class="foods-wrapper">
+                <ul ref="foodsUl">
                     <li class="food-list-hook" v-for="(good, index) in goods" :key="index">
                         <h1 class="title">{{ good.name }}</h1>
                         <ul>
@@ -45,14 +45,55 @@
 </template>
 
 <script>
+    import BScroll from 'better-scroll'
     import { mapState } from 'vuex'
+
     export default {
+        data() {
+            return {
+                scrollY: 0,
+                tops: []
+            }
+        },
         mounted () {
-            this.$store.dispatch('getShopGoods')
+            this.$store.dispatch('getShopGoods', () => {
+                this.$nextTick(() => {
+                    this._initScroll()
+                    this._initTops()
+                })
+            })
         },
         computed: {
             ...mapState(['goods'])
-        }
+        },
+        methods: {
+            _initScroll(){
+                 new BScroll('.menu-wrapper')
+                  const foodScroll = new BScroll('.foods-wrapper', {
+                      probeType: 2
+                  })
+                  foodScroll.on('scroll', ({x, y})=>{
+                      window.console.log(x, y)
+                      this.scrollY = Math.abs(y)
+                  })                
+            },
+            _initTops(){
+                const tops = []
+                let top = 0
+                tops.push(top)
+                
+                const lis = this.$refs.foodsUl.children
+                window.console.log(lis)
+
+                Array.prototype.slice.call(lis).forEach(li => {
+                    top += li.clientHeight
+                    tops.push(top)
+                })
+
+                this.tops = tops
+                window.console.log(tops)
+            }
+        },
     }
 </script>
 
