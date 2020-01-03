@@ -3,7 +3,9 @@
         <div class="goods">
             <div class="menu-wrapper">
                 <ul>
-                    <li class="menu-item current" v-for="(good, index) in goods" :key="index">
+                    <li class="menu-item" v-for="(good, index) in goods" :key="index" 
+                    @click="clickMenuItem(index)"
+                    :class="{current: index === currentIndex}">
                         <span class="text bottom-border-1px">
                             <img :src="good.icon" class="icon" v-if="good.icon">
                             {{ good.name }}
@@ -64,18 +66,27 @@
             })
         },
         computed: {
-            ...mapState(['goods'])
+            ...mapState(['goods']),
+            currentIndex () {
+                const { scrollY, tops } = this
+                const index = tops.findIndex((top, index) => {
+                    return scrollY >= top && scrollY < tops[index + 1]
+                })
+                return index
+            }
         },
         methods: {
             _initScroll(){
                  new BScroll('.menu-wrapper')
-                  const foodScroll = new BScroll('.foods-wrapper', {
+                 this.foodScroll = new BScroll('.foods-wrapper', {
                       probeType: 2
                   })
-                  foodScroll.on('scroll', ({x, y})=>{
-                      window.console.log(x, y)
+                  this.foodScroll.on('scroll', ({y})=>{
                       this.scrollY = Math.abs(y)
-                  })                
+                  })
+                  this.foodScroll.on('scrollEnd', ({y})=>{
+                      this.scrollY = Math.abs(y)
+                  })                                 
             },
             _initTops(){
                 const tops = []
@@ -83,15 +94,18 @@
                 tops.push(top)
                 
                 const lis = this.$refs.foodsUl.children
-                window.console.log(lis)
-
                 Array.prototype.slice.call(lis).forEach(li => {
                     top += li.clientHeight
                     tops.push(top)
                 })
 
                 this.tops = tops
-                window.console.log(tops)
+            },
+            clickMenuItem(index){
+                // window.console.log(index)
+                const scrollY = this.tops[index]
+                this.scrollY = scrollY
+                this.foodScroll.scrollTo(0, -scrollY, 300)
             }
         },
     }
