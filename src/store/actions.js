@@ -82,7 +82,7 @@ export default {
     async getShopGoods({commit}){
         const result = await reqShopGoods()
         if (result.code === 0) {
-            const goods = reqShopGoods
+            const goods = result.data
             commit(RECEIVE_GOODS, {goods})
         }
     }

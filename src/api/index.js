@@ -30,5 +30,5 @@ export const reqUserInfo = () => ajax(BASE_URL + '/userinfo')
 export const reqLogout = () => ajax(BASE_URL + '/logout')
 
 export const reqShopInfo = () => ajax('/info')
-export const reqShopGoods = () => ajax('/ratings')
-export const reqShopRatings = () => ajax('/goods')
+export const reqShopGoods = () => ajax('/goods')
+export const reqShopRatings = () => ajax('/ratings')
