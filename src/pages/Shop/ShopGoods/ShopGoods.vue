@@ -46,6 +46,8 @@
                     </li>
                 </ul>
             </div>
+
+            <ShopCart />
         </div>
         <Food :food="food" ref="food"/>
     </div>
@@ -56,6 +58,7 @@
     import { mapState } from 'vuex'
     import CartControl from '../../../components/CartControl/CartControl'
     import Food from '../../../components/Food/Food'
+    import ShopCart from '../../../components/ShopCart/ShopCart.vue'
 
     export default {
         data() {
@@ -67,7 +70,8 @@
         },
         components: {
           CartControl,
-          Food
+          Food,
+          ShopCart
         },
         mounted () {
             this.$store.dispatch('getShopGoods', () => {

@@ -2,35 +2,35 @@
   <div>
     <div class="shopcart">
       <div class="content">
-        <div class="content-left">
+        <div class="content-left" @click="toggleShow">
           <div class="logo-wrapper">
-            <div class="logo" >
-              <i class="iconfont icon-shopping_cart" ></i>
+            <div class="logo" :class="{highlight: totalCount}">
+              <i class="iconfont icon-shopping_cart" :class="{highlight: totalCount}" ></i>
             </div>
-            <div class="num" ></div>
+            <div class="num" v-if="totalCount">{{totalCount}}</div>
           </div>
-          <div class="price">￥</div>
-          <div class="desc">另需配送费￥元</div>
+          <div class="price" :class="{highlight: totalCount}">￥{{totalPrice}}</div>
+          <div class="desc">另需配送费￥{{ info.deliveryPrice }}元</div>
         </div>
         <div class="content-right">
-          <div class="pay">
-            
+          <div class="pay" :class="payClass">
+            {{ payText }}
           </div>
         </div>
       </div>
       <transition name="move">
-        <div class="shopcart-list">
+        <div class="shopcart-list" v-show="listShow" >
           <div class="list-header">
             <h1 class="title">购物车</h1>
             <span class="empty" >清空</span>
           </div>
           <div class="list-content">
             <ul>
-              <li class="food" >
-                <span class="name"></span>
-                <div class="price"><span>￥</span></div>
+              <li class="food" v-for="(food, index) in cartFoods" :key="index">
+                <span class="name">{{ food.name }}</span>
+                <div class="price"><span>￥{{ food.price }}</span></div>
                 <div class="cartcontrol-wrapper">
-                  <!-- <CartControl :food="food"/> -->
+                  <CartControl :food="food"/>
                 </div>
               </li>
             </ul>
@@ -39,13 +39,61 @@
       </transition>
 
     </div>
-    <div class="list-mask"></div>
+    <div class="list-mask" v-show="listShow" @click="toggleShow"></div>
   </div>
 </template>
 
 <script>
+
+    import CartControl from '../CartControl/CartControl.vue' 
+    import { mapState, mapGetters } from 'vuex'
     export default {
-        
+      components: {
+        CartControl
+      },
+      data(){
+        return {
+          isShow: false
+        }
+      },
+      computed: {
+        ...mapState(['info','cartFoods']),
+        ...mapGetters(['totalCount', 'totalPrice']),
+        payClass(){
+          const {totalPrice} = this
+          const {minPrice} = this.info
+
+          return totalPrice >= minPrice ? 'enough' : 'not-enough'
+        },
+        payText(){
+          const {totalPrice} = this
+          const {minPrice} = this.info
+          if(totalPrice === 0){
+            return `￥${minPrice}起送`
+          }else if(totalPrice < minPrice){
+            return `还差￥${minPrice - totalPrice}起送`
+          }else {
+            return '去结算'
+          }
+        },
+        listShow(){
+          let that = this
+          if(this.totalCount === 0){
+            that.isShow = false
+            return false
+          }
+
+          return this.isShow
+        }
+      },
+      methods: {
+        toggleShow(){
+          if(this.totalCount > 0){
+            this.isShow = !this.isShow
+          }
+        }
+      }
+
     }
 </script>
 
